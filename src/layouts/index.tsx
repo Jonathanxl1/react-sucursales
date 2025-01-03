@@ -1,6 +1,7 @@
 import { PropsWithChildren } from "react";
 import Navbar from "../components/NavBar";
 import { BrowserRouter, Route, Routes } from "react-router";
+import Login from "../pages/Login";
 
 interface Props extends PropsWithChildren {
   navbar: JSX.Element;

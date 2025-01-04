@@ -7,7 +7,13 @@ export async function getDelegations() {
 }
 
 export async function createDelegation(body: any) {
-  let { data } = await api.post("/sucursal");
+  let { data } = await api.post("/sucursal", body);
+
+  return data;
+}
+
+export async function getDelegationById(id: number) {
+  let { data } = await api.get(`/sucursal/${id}`);
 
   return data;
 }

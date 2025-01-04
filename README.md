@@ -1,30 +1,86 @@
-# React + TypeScript + Vite
+# Frontend React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Fronted React App para prueba tecnica Nestjs
 
-Currently, two official plugins are available:
+## Tabla de Contenidos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Library Versions](#setup)
+- [Setup](#setup)
+- [Usage](#usage)
 
-## Expanding the ESLint configuration
+## Library Versions
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **React**: `^18.3.1`
+- **Axios**: `1.7.9`
+- **React Router**: `^10.2.27`
 
-- Configure the top-level `parserOptions` property like this:
+## Setup
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+Previamente para poder realizar las pruebas en entorno de desarrollo correspondientes se necesita crear un archivo `.env` para poder usar la aplicacion dejo los valores que se necesitan
+
+```env
+VITE_API_URL=<ENPOINT NESTJS>
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Para Instalar:
+
+```bash
+# npm
+npm install
+
+# pnpm
+pnpm install
+
+# yarn
+yarn install
+
+# bun
+bun install
+```
+
+## Development Server
+
+Start the development server on `http://localhost:3000`:
+
+```bash
+# npm
+npm run dev
+
+# pnpm
+pnpm run dev
+
+# yarn
+yarn dev
+
+# bun
+bun run dev
+```
+
+## Production
+
+Build the application for production:
+
+```bash
+# npm
+npm run build
+
+# pnpm
+pnpm run build
+
+# yarn
+yarn build
+
+# bun
+bun run build
+```
+
+## Usage
+
+Agregado la url de la api a consumir se usa npm run dev para desplegar en forma de desarollo y de hay la interfaz grafica indicara que hacer.
+
+## Pending
+
+Lista de pendiente que no se pudieron resolver durante el desarrollo de la prueba
+
+- [ ] Pop ups notificando estado de conexion
+- [ ] Diseño y estilos

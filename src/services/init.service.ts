@@ -7,7 +7,7 @@ export const api = axios.create({
   },
 });
 
-export function setBearerToken(token: string) {
+export function setAuthorizationToken(token: string) {
   api.interceptors.request.use(
     (config) => {
       config.headers["Authorization"] = `Bearer ${token}`;

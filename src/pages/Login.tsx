@@ -1,8 +1,14 @@
 import { useState } from "react";
+import { login } from "../services/auth.service";
+import { setBearerToken } from "../storage/localStorage.storage";
+import { useNavigate } from "react-router";
+import { setAuthorizationToken } from "../services/init.service";
 
 function Login() {
   let [email, setEmail] = useState<string>("");
   let [password, setPassword] = useState<string>("");
+
+  let navigate = useNavigate();
 
   function submit() {
     let data = {
@@ -10,7 +16,11 @@ function Login() {
       password,
     };
 
-    console.log(data);
+    login(data).then(({ token }) => {
+      setBearerToken(token);
+      setAuthorizationToken(token);
+      navigate("/");
+    });
   }
   return (
     <>

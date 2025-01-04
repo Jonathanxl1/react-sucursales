@@ -1,9 +1,17 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router";
+
 import {
   getCitiesBy,
   getCountries,
   getDeparmentsBy,
 } from "../services/locations.service";
+
+import {
+  createDelegation,
+  getDelegationById,
+  putDelegations,
+} from "../services/delegations.service";
 
 function EditDelegations() {
   let [form, setForm] = useState({
@@ -15,7 +23,7 @@ function EditDelegations() {
     city_id: "",
     latitude: "",
     longitude: "",
-    telephone: "",
+    phone: "",
     address: "",
     image: null,
   });
@@ -23,8 +31,49 @@ function EditDelegations() {
   let [countries, setCountries] = useState<Array<{ id: number; name: string }>>(
     []
   );
+
   let [deparments, setDeparments] = useState([]);
+
   let [cities, SetCities] = useState([]);
+
+  let [typeAction, setTypeAction] = useState("create");
+
+  let { id } = useParams();
+
+  let navigate = useNavigate();
+
+  useEffect(() => {
+    getCountries().then((data) => setCountries(data));
+
+    if (id) {
+      getDelegationById(parseInt(id)).then((data) => {
+        setForm(data);
+      });
+      setTypeAction("update");
+    } else {
+      setTypeAction("create");
+    }
+
+    return () => {};
+  }, []);
+
+  useEffect(() => {
+    if (form["country_id"]) {
+      setDeparments([]);
+      getDeparmentsBy(parseInt(form["country_id"])).then((data) =>
+        setDeparments(data)
+      );
+    }
+
+    if (form["country_id"]) {
+      SetCities([]);
+      getCitiesBy(parseInt(form["deparment_id"])).then((data) =>
+        SetCities(data)
+      );
+    }
+
+    return () => {};
+  }, [form["country_id"], form["deparment_id"]]);
 
   function handleInput(
     event: ChangeEvent<
@@ -35,24 +84,23 @@ function EditDelegations() {
     setForm({ ...form, [name]: value });
   }
 
-  useEffect(() => {
-    getCountries().then((data) => setCountries(data));
-    return () => {};
-  }, []);
-
-  useEffect(() => {
-    setDeparments([]);
-    getDeparmentsBy(parseInt(form["country_id"])).then((data) =>
-      setDeparments(data)
-    );
-    return () => {};
-  }, [form["country_id"]]);
-
-  useEffect(() => {
-    SetCities([]);
-    getCitiesBy(parseInt(form["deparment_id"])).then((data) => SetCities(data));
-    return () => {};
-  }, [form["deparment_id"]]);
+  function submitForm() {
+    if (typeAction == "create") {
+      // create
+      createDelegation(form).then(() => {
+        alert("Delegation Created!");
+        navigate("/");
+      });
+    } else {
+      // update
+      if (id) {
+        putDelegations(parseInt(id), form).then(() => {
+          alert("Delegation Updated #" + id);
+          navigate("/");
+        });
+      }
+    }
+  }
 
   return (
     <>
@@ -67,6 +115,7 @@ function EditDelegations() {
               type="text"
               name="name"
               id="name"
+              value={form["name"]}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:ring-blue-300"
               onChange={(e) => handleInput(e)}
             />
@@ -75,16 +124,21 @@ function EditDelegations() {
               type="text"
               name="email"
               id="name"
+              value={form["email"]}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:ring-blue-300"
               onChange={(e) => handleInput(e)}
             />
             <textarea
               placeholder="description"
               name="description"
+              value={form["description"]}
               onChange={(e) => handleInput(e)}></textarea>
             <label>
-              Contries
-              <select name="country_id" onChange={handleInput}>
+              <span className="text-gray-700 font-semibold">Contries</span>
+              <select
+                className="select-style"
+                name="country_id"
+                onChange={handleInput}>
                 {countries.map(({ id, name }) => {
                   return <option value={id}>{name}</option>;
                 })}
@@ -94,7 +148,10 @@ function EditDelegations() {
             {form["country_id"] && deparments.length ? (
               <label>
                 Deparments
-                <select name="deparment_id" onChange={handleInput}>
+                <select
+                  className="select-style"
+                  name="deparment_id"
+                  onChange={handleInput}>
                   {deparments.map(({ id, name }) => {
                     return <option value={id}>{name}</option>;
                   })}
@@ -105,7 +162,12 @@ function EditDelegations() {
             {form["country_id"] && form["deparment_id"] && deparments.length ? (
               <label>
                 Cities
-                <select name="city_id" onChange={handleInput}>
+                <select
+                  name="city_id"
+                  value={form["city_id"]}
+                  className="select-style"
+                  onChange={handleInput}>
+                  <option value="">Select City</option>
                   {cities.map(({ id, name }) => {
                     return <option value={id}>{name}</option>;
                   })}
@@ -119,6 +181,7 @@ function EditDelegations() {
               className="input-style"
               name="latitude"
               id=""
+              value={form["latitude"]}
               onChange={(e) => handleInput(e)}
             />
 
@@ -128,15 +191,17 @@ function EditDelegations() {
               className="input-style"
               name="longitude"
               id=""
+              value={form["longitude"]}
               onChange={(e) => handleInput(e)}
             />
 
-            <label htmlFor="telephone">Telephone</label>
+            <label htmlFor="phone">Telephone</label>
             <input
               type="tel"
               className="input-style"
-              name="telephone"
+              name="phone"
               id=""
+              value={form["phone"]}
               onChange={(e) => handleInput(e)}
             />
 
@@ -146,14 +211,19 @@ function EditDelegations() {
               className="input-style"
               name="address"
               id=""
+              value={form["address"]}
               onChange={(e) => handleInput(e)}
             />
 
             <label htmlFor="image">Image</label>
             <input type="file" className="" name="image" id="" />
 
-            <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-blue-300 transition duration-200">
-              Create
+            <button
+              onClick={submitForm}
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-blue-300 transition duration-200">
+              {typeAction == "create"
+                ? "Create Delegation"
+                : "Update Delegation"}
             </button>
           </form>
         </div>
